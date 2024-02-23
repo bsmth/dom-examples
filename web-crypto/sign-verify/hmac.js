@@ -1,5 +1,4 @@
 (() => {
-
   /*
   Store the calculated signature here, so we can verify it later.
   */
@@ -25,15 +24,11 @@
     signatureValue.classList.remove("valid", "invalid");
 
     let encoded = getMessageEncoding();
-    signature = await window.crypto.subtle.sign(
-      "HMAC",
-      key,
-      encoded
-    );
+    signature = await window.crypto.subtle.sign("HMAC", key, encoded);
 
-    signatureValue.classList.add('fade-in');
-    signatureValue.addEventListener('animationend', () => {
-      signatureValue.classList.remove('fade-in');
+    signatureValue.classList.add("fade-in");
+    signatureValue.addEventListener("animationend", () => {
+      signatureValue.classList.remove("fade-in");
     });
     let buffer = new Uint8Array(signature, 0, 5);
     signatureValue.textContent = `${buffer}...[${signature.byteLength} bytes total]`;
@@ -53,7 +48,7 @@
       "HMAC",
       key,
       signature,
-      encoded
+      encoded,
     );
 
     signatureValue.classList.add(result ? "valid" : "invalid");
@@ -63,23 +58,24 @@
   Generate a sign/verify key, then set up event listeners
   on the "Sign" and "Verify" buttons.
   */
-  window.crypto.subtle.generateKey(
-    {
-      name: "HMAC",
-      hash: {name: "SHA-512"}
-    },
-    true,
-    ["sign", "verify"]
-  ).then((key) => {
-    const signButton = document.querySelector(".hmac .sign-button");
-    signButton.addEventListener("click", () => {
-      signMessage(key);
-    });
+  window.crypto.subtle
+    .generateKey(
+      {
+        name: "HMAC",
+        hash: { name: "SHA-512" },
+      },
+      true,
+      ["sign", "verify"],
+    )
+    .then((key) => {
+      const signButton = document.querySelector(".hmac .sign-button");
+      signButton.addEventListener("click", () => {
+        signMessage(key);
+      });
 
-    const verifyButton = document.querySelector(".hmac .verify-button");
-    verifyButton.addEventListener("click", () => {
-      verifyMessage(key);
+      const verifyButton = document.querySelector(".hmac .verify-button");
+      verifyButton.addEventListener("click", () => {
+        verifyMessage(key);
+      });
     });
-  });
-
 })();

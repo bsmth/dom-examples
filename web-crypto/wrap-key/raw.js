@@ -1,5 +1,4 @@
 (() => {
-
   let salt;
 
   /*
@@ -10,11 +9,11 @@
     const password = window.prompt("Enter your password");
     const enc = new TextEncoder();
     return window.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits", "deriveKey"],
     );
   }
 
@@ -25,15 +24,15 @@
   function getKey(keyMaterial, salt) {
     return window.crypto.subtle.deriveKey(
       {
-        "name": "PBKDF2",
-        salt: salt, 
-        "iterations": 100000,
-        "hash": "SHA-256"
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256",
       },
       keyMaterial,
-      { "name": "AES-KW", "length": 256},
+      { name: "AES-KW", length: 256 },
       true,
-      [ "wrapKey", "unwrapKey" ]
+      ["wrapKey", "unwrapKey"],
     );
   }
 
@@ -50,7 +49,7 @@
       "raw",
       keyToWrap,
       wrappingKey,
-      "AES-KW"
+      "AES-KW",
     );
 
     const wrappedKeyBuffer = new Uint8Array(wrapped);
@@ -67,19 +66,19 @@
   Generate an encrypt/decrypt secret key,
   then set up an event listener on the "Wrap" button.
   */
-  window.crypto.subtle.generateKey(
-    {
-      name: "AES-GCM",
-      length: 256,
-    },
-    true,
-    ["encrypt", "decrypt"]
-  ).then((secretKey) => {
-    const wrapButton = document.querySelector(".raw");
-    wrapButton.addEventListener("click", () => {
-      wrapCryptoKey(secretKey);
+  window.crypto.subtle
+    .generateKey(
+      {
+        name: "AES-GCM",
+        length: 256,
+      },
+      true,
+      ["encrypt", "decrypt"],
+    )
+    .then((secretKey) => {
+      const wrapButton = document.querySelector(".raw");
+      wrapButton.addEventListener("click", () => {
+        wrapCryptoKey(secretKey);
+      });
     });
-
-  });
-
 })();

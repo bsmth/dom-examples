@@ -1,5 +1,4 @@
 (() => {
-
   let salt;
 
   /*
@@ -10,11 +9,11 @@
     const password = window.prompt("Enter your password");
     const enc = new TextEncoder();
     return window.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits", "deriveKey"],
     );
   }
 
@@ -26,17 +25,19 @@
     salt = window.crypto.getRandomValues(new Uint8Array(16));
     const derivedBits = await window.crypto.subtle.deriveBits(
       {
-        "name": "PBKDF2",
-        salt: salt, 
-        "iterations": 100000,
-        "hash": "SHA-256"
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256",
       },
       keyMaterial,
-      256
+      256,
     );
 
     const buffer = new Uint8Array(derivedBits, 0, 5);
-    const derivedBitsValue = document.querySelector(".pbkdf2 .derived-bits-value");
+    const derivedBitsValue = document.querySelector(
+      ".pbkdf2 .derived-bits-value",
+    );
     derivedBitsValue.classList.add("fade-in");
     derivedBitsValue.addEventListener("animationend", () => {
       derivedBitsValue.classList.remove("fade-in");
@@ -44,9 +45,10 @@
     derivedBitsValue.textContent = `${buffer}...[${derivedBits.byteLength} bytes total]`;
   }
 
-  const deriveBitsButton = document.querySelector(".pbkdf2 .derive-bits-button");
+  const deriveBitsButton = document.querySelector(
+    ".pbkdf2 .derive-bits-button",
+  );
   deriveBitsButton.addEventListener("click", () => {
     getDerivedBits();
   });
-
 })();

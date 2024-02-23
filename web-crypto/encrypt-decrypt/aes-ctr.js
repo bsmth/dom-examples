@@ -1,5 +1,4 @@
 (() => {
-
   /*
   Store the calculated ciphertext and counter here, so we can decrypt the message later.
   */
@@ -24,22 +23,24 @@
   async function encryptMessage(key) {
     let encoded = getMessageEncoding();
     // The counter block value must never be reused with a given key.
-    counter = window.crypto.getRandomValues(new Uint8Array(16)),
-    ciphertext = await window.crypto.subtle.encrypt(
-      {
-        name: "AES-CTR",
-        counter,
-        length: 64
-      },
-      key,
-      encoded
-    );
+    (counter = window.crypto.getRandomValues(new Uint8Array(16))),
+      (ciphertext = await window.crypto.subtle.encrypt(
+        {
+          name: "AES-CTR",
+          counter,
+          length: 64,
+        },
+        key,
+        encoded,
+      ));
 
     let buffer = new Uint8Array(ciphertext, 0, 5);
-    const ciphertextValue = document.querySelector(".aes-ctr .ciphertext-value");
-    ciphertextValue.classList.add('fade-in');
-    ciphertextValue.addEventListener('animationend', () => {
-      ciphertextValue.classList.remove('fade-in');
+    const ciphertextValue = document.querySelector(
+      ".aes-ctr .ciphertext-value",
+    );
+    ciphertextValue.classList.add("fade-in");
+    ciphertextValue.addEventListener("animationend", () => {
+      ciphertextValue.classList.remove("fade-in");
     });
     ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
   }
@@ -53,17 +54,17 @@
       {
         name: "AES-CTR",
         counter,
-        length: 64
+        length: 64,
       },
       key,
-      ciphertext
+      ciphertext,
     );
 
     let dec = new TextDecoder();
     const decryptedValue = document.querySelector(".aes-ctr .decrypted-value");
-    decryptedValue.classList.add('fade-in');
-    decryptedValue.addEventListener('animationend', () => {
-      decryptedValue.classList.remove('fade-in');
+    decryptedValue.classList.add("fade-in");
+    decryptedValue.addEventListener("animationend", () => {
+      decryptedValue.classList.remove("fade-in");
     });
     decryptedValue.textContent = dec.decode(decrypted);
   }
@@ -72,23 +73,24 @@
   Generate an encryption key, then set up event listeners
   on the "Encrypt" and "Decrypt" buttons.
   */
-  window.crypto.subtle.generateKey(
-    {
+  window.crypto.subtle
+    .generateKey(
+      {
         name: "AES-CTR",
-        length: 256
-    },
-    true,
-    ["encrypt", "decrypt"]
-  ).then((key) => {
-    const encryptButton = document.querySelector(".aes-ctr .encrypt-button");
-    encryptButton.addEventListener("click", () => {
-      encryptMessage(key);
-    });
+        length: 256,
+      },
+      true,
+      ["encrypt", "decrypt"],
+    )
+    .then((key) => {
+      const encryptButton = document.querySelector(".aes-ctr .encrypt-button");
+      encryptButton.addEventListener("click", () => {
+        encryptMessage(key);
+      });
 
-    const decryptButton = document.querySelector(".aes-ctr .decrypt-button");
-    decryptButton.addEventListener("click", () => {
-      decryptMessage(key);
+      const decryptButton = document.querySelector(".aes-ctr .decrypt-button");
+      decryptButton.addEventListener("click", () => {
+        decryptMessage(key);
+      });
     });
-  });
-
 })();

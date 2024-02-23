@@ -1,22 +1,22 @@
 // Data for the sites to open
 const sites = [
   {
-    "name": "MDN code playground",
-    "url": "https://developer.mozilla.org/en-US/play"
+    name: "MDN code playground",
+    url: "https://developer.mozilla.org/en-US/play",
   },
   {
-    "name": "MDN HTML reference",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML"
+    name: "MDN HTML reference",
+    url: "https://developer.mozilla.org/en-US/docs/Web/HTML",
   },
   {
-    "name": "MDN CSS reference",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/CSS"
+    name: "MDN CSS reference",
+    url: "https://developer.mozilla.org/en-US/docs/Web/CSS",
   },
   {
-    "name": "MDN JavaScript reference",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
-  }
-]
+    name: "MDN JavaScript reference",
+    url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+  },
+];
 
 const outputElem = document.querySelector("section");
 
@@ -26,7 +26,7 @@ let popoverElem = undefined;
 // Array to hold references to the currently open windows
 let windowRefs = [];
 
-// Constants to represent the width and height of the Chrome UI when calculating the window size to open 
+// Constants to represent the width and height of the Chrome UI when calculating the window size to open
 const WINDOW_CHROME_Y = 51;
 const WINDOW_CHROME_X = 1;
 
@@ -46,7 +46,7 @@ if ("getScreenDetails" in window) {
 function createLinks(sites) {
   const list = document.createElement("ul");
 
-  sites.forEach(site => {
+  sites.forEach((site) => {
     const listItem = document.createElement("li");
     const link = document.createElement("a");
 
@@ -62,7 +62,7 @@ function createLinks(sites) {
 
 function createButton() {
   const btn = document.createElement("button");
-  btn.textContent = "Open learning environment"
+  btn.textContent = "Open learning environment";
   outputElem.appendChild(btn);
 
   btn.addEventListener("click", openWindows);
@@ -71,7 +71,7 @@ function createButton() {
 // Function to create popover warning users to update their settings to allow multiple popup windows
 
 function createPopover() {
-  popoverElem = document.createElement('div');
+  popoverElem = document.createElement("div");
   popoverElem.id = "block-warning";
   popoverElem.popover = "manual";
   popoverElem.innerHTML = `
@@ -88,7 +88,7 @@ function createPopover() {
   document.body.append(popoverElem);
 
   const dismissBtn = document.getElementById("popover-dismiss");
-  dismissBtn.addEventListener('click', () => {
+  dismissBtn.addEventListener("click", () => {
     popoverElem.hidePopover();
   });
 }
@@ -107,7 +107,7 @@ function openWindow(left, top, width, height, url) {
     // If the browser is blocking popups, clear out any windows that were able to open
     // and display instructions to help the user fix this problem
     closeAllWindows();
-    popoverElem.showPopover()
+    popoverElem.showPopover();
   } else {
     // Store a reference to the window in the windowRefs array
     windowRefs.push(windowRef);
@@ -115,8 +115,8 @@ function openWindow(left, top, width, height, url) {
 }
 
 function closeAllWindows() {
-  // Loop through all window refs and close each one 
-  windowRefs.forEach(windowRef => {
+  // Loop through all window refs and close each one
+  windowRefs.forEach((windowRef) => {
     windowRef.close();
   });
   windowRefs = [];
@@ -132,65 +132,86 @@ async function openWindows() {
     // Only one screen
     const screen1 = screenDetails.screens[0];
     // Windows will be half the width and half the height of the screen
-    // The available width of screen1, minus 2 times the horizontal browser chrome width, divided by 2 
-    const windowWidth = Math.floor((screen1.availWidth - 2 * WINDOW_CHROME_X) / 2);
-    // The available height of screen1, minus 2 times the horizontal browser chrome height, divided by 2 
-    const windowHeight = Math.floor((screen1.availHeight - 2 * WINDOW_CHROME_Y) / 2);
+    // The available width of screen1, minus 2 times the horizontal browser chrome width, divided by 2
+    const windowWidth = Math.floor(
+      (screen1.availWidth - 2 * WINDOW_CHROME_X) / 2,
+    );
+    // The available height of screen1, minus 2 times the horizontal browser chrome height, divided by 2
+    const windowHeight = Math.floor(
+      (screen1.availHeight - 2 * WINDOW_CHROME_Y) / 2,
+    );
 
-    openWindow(screen1.availLeft,
+    openWindow(
+      screen1.availLeft,
       screen1.availTop,
       windowWidth,
       windowHeight,
-      sites[0].url);
-    openWindow(windowWidth + screen1.availLeft + WINDOW_CHROME_X,
+      sites[0].url,
+    );
+    openWindow(
+      windowWidth + screen1.availLeft + WINDOW_CHROME_X,
       screen1.availTop,
       windowWidth,
       windowHeight,
-      sites[1].url);
-    openWindow(screen1.availLeft,
+      sites[1].url,
+    );
+    openWindow(
+      screen1.availLeft,
       windowHeight + screen1.availHeight + WINDOW_CHROME_Y,
       windowWidth,
       windowHeight,
-      sites[2].url);
-    openWindow(windowWidth + screen1.availLeft + WINDOW_CHROME_X,
+      sites[2].url,
+    );
+    openWindow(
+      windowWidth + screen1.availLeft + WINDOW_CHROME_X,
       windowHeight + screen1.availHeight + WINDOW_CHROME_Y,
       windowWidth,
       windowHeight,
-      sites[3].url);
-
+      sites[3].url,
+    );
   } else {
     // Two screens or more
     const screen1 = screenDetails.screens[0];
     const screen2 = screenDetails.screens[1];
     // Windows will be a third the width and the full height of the screen
-    // The available width of screen1, minus 3 times the horizontal browser chrome width, divided by 3 
-    const windowWidth = Math.floor((screen1.availWidth - 3 * WINDOW_CHROME_X) / 3);
+    // The available width of screen1, minus 3 times the horizontal browser chrome width, divided by 3
+    const windowWidth = Math.floor(
+      (screen1.availWidth - 3 * WINDOW_CHROME_X) / 3,
+    );
     // The available height of screen1, minus the vertical browser chrome width
     const windowHeight = Math.floor(screen1.availHeight - WINDOW_CHROME_Y);
 
     // Open the reference windows in thirds across the entire height of the primary screen
-    openWindow(screen1.availLeft,
+    openWindow(
+      screen1.availLeft,
       screen1.availTop,
       windowWidth,
       windowHeight,
-      sites[1].url);
-    openWindow(screen1.availLeft + windowWidth + WINDOW_CHROME_X,
+      sites[1].url,
+    );
+    openWindow(
+      screen1.availLeft + windowWidth + WINDOW_CHROME_X,
       screen1.availTop,
       windowWidth,
       windowHeight,
-      sites[2].url);
-    openWindow(screen1.availLeft + ((windowWidth + WINDOW_CHROME_X) * 2),
+      sites[2].url,
+    );
+    openWindow(
+      screen1.availLeft + (windowWidth + WINDOW_CHROME_X) * 2,
       screen1.availTop,
       windowWidth,
       windowHeight,
-      sites[3].url);
+      sites[3].url,
+    );
 
     // Open the code editor the full size of the secondary screen
-    openWindow(screen2.availLeft,
+    openWindow(
+      screen2.availLeft,
       screen2.availTop,
       screen2.availWidth,
       screen2.availHeight,
-      sites[0].url);
+      sites[0].url,
+    );
   }
 
   // Check whether one of our popup windows has been closed
@@ -199,7 +220,7 @@ async function openWindows() {
   const closeMonitor = setInterval(checkWindowClose, 250);
 
   function checkWindowClose() {
-    if (windowRefs.some(windowRef => windowRef.closed)) {
+    if (windowRefs.some((windowRef) => windowRef.closed)) {
       closeAllWindows();
       clearInterval(closeMonitor);
     }

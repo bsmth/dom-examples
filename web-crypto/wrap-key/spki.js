@@ -1,5 +1,4 @@
 (() => {
-
   let salt;
   let iv;
 
@@ -11,11 +10,11 @@
     const password = window.prompt("Enter your password");
     const enc = new TextEncoder();
     return window.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits", "deriveKey"],
     );
   }
 
@@ -26,15 +25,15 @@
   function getKey(keyMaterial, salt) {
     return window.crypto.subtle.deriveKey(
       {
-        "name": "PBKDF2",
-        salt: salt, 
-        "iterations": 100000,
-        "hash": "SHA-256"
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256",
       },
       keyMaterial,
-      { "name": "AES-CBC", "length": 256},
+      { name: "AES-CBC", length: 256 },
       true,
-      [ "wrapKey", "unwrapKey" ]
+      ["wrapKey", "unwrapKey"],
     );
   }
 
@@ -54,8 +53,8 @@
       wrappingKey,
       {
         name: "AES-CBC",
-        iv: iv
-      }
+        iv: iv,
+      },
     );
 
     const wrappedKeyBuffer = new Uint8Array(wrapped);
@@ -72,21 +71,22 @@
   Generate an encrypt/decrypt key pair,
   then set up an event listener on the "Wrap" button.
   */
-  window.crypto.subtle.generateKey(
-    {
-      name: "RSA-OAEP",
-      // Consider using a 4096-bit key for systems that require long-term security
-      modulusLength: 2048,
-      publicExponent: new Uint8Array([1, 0, 1]),
-      hash: "SHA-256",
-    },
-    true,
-    ["encrypt", "decrypt"]
-  ).then((keyPair) => {
-    const wrapButton = document.querySelector(".spki");
-    wrapButton.addEventListener("click", () => {
-      wrapCryptoKey(keyPair.publicKey);
+  window.crypto.subtle
+    .generateKey(
+      {
+        name: "RSA-OAEP",
+        // Consider using a 4096-bit key for systems that require long-term security
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([1, 0, 1]),
+        hash: "SHA-256",
+      },
+      true,
+      ["encrypt", "decrypt"],
+    )
+    .then((keyPair) => {
+      const wrapButton = document.querySelector(".spki");
+      wrapButton.addEventListener("click", () => {
+        wrapCryptoKey(keyPair.publicKey);
+      });
     });
-  });
-
 })();

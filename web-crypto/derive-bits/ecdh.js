@@ -1,18 +1,19 @@
 (() => {
-
   async function deriveSharedSecret(privateKey, publicKey) {
     const sharedSecret = await window.crypto.subtle.deriveBits(
       {
         name: "ECDH",
         namedCurve: "P-384",
-        public: publicKey
+        public: publicKey,
       },
       privateKey,
-      256
+      256,
     );
 
     const buffer = new Uint8Array(sharedSecret, 0, 5);
-    const sharedSecretValue = document.querySelector(".ecdh .derived-bits-value");
+    const sharedSecretValue = document.querySelector(
+      ".ecdh .derived-bits-value",
+    );
     sharedSecretValue.classList.add("fade-in");
     sharedSecretValue.addEventListener("animationend", () => {
       sharedSecretValue.classList.remove("fade-in");
@@ -26,31 +27,32 @@
   const generateAlicesKeyPair = window.crypto.subtle.generateKey(
     {
       name: "ECDH",
-      namedCurve: "P-384"
+      namedCurve: "P-384",
     },
     false,
-    ["deriveBits"]
+    ["deriveBits"],
   );
 
   const generateBobsKeyPair = window.crypto.subtle.generateKey(
     {
       name: "ECDH",
-      namedCurve: "P-384"
+      namedCurve: "P-384",
     },
     false,
-    ["deriveBits"]
+    ["deriveBits"],
   );
 
-  Promise.all([generateAlicesKeyPair, generateBobsKeyPair]).then(values => {
+  Promise.all([generateAlicesKeyPair, generateBobsKeyPair]).then((values) => {
     const alicesKeyPair = values[0];
     const bobsKeyPair = values[1];
 
-    const deriveBitsButton = document.querySelector(".ecdh .derive-bits-button");
+    const deriveBitsButton = document.querySelector(
+      ".ecdh .derive-bits-button",
+    );
     deriveBitsButton.addEventListener("click", () => {
       // Alice then generates a secret using her private key and Bob's public key.
       // Bob could generate the same secret using his private key and Alice's public key.
       deriveSharedSecret(alicesKeyPair.privateKey, bobsKeyPair.publicKey);
     });
   });
-
 })();

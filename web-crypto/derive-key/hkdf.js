@@ -33,7 +33,7 @@
       keyMaterial,
       { name: "AES-GCM", length: 256 },
       true,
-      ["encrypt", "decrypt"]
+      ["encrypt", "decrypt"],
     );
   }
 
@@ -59,7 +59,7 @@
         iv: message.iv,
       },
       key,
-      encoded
+      encoded,
     );
 
     let buffer = new Uint8Array(message.ciphertext, 0, 5);
@@ -91,7 +91,7 @@
           iv: message.iv,
         },
         key,
-        message.ciphertext
+        message.ciphertext,
       );
 
       let dec = new TextDecoder();
@@ -115,7 +115,7 @@
     const secret = await window.crypto.subtle.deriveBits(
       { name: "ECDH", public: publicKey },
       privateKey,
-      384
+      384,
     );
 
     return window.crypto.subtle.importKey(
@@ -123,7 +123,7 @@
       secret,
       { name: "HKDF" },
       false,
-      ["deriveKey"]
+      ["deriveKey"],
     );
   }
 
@@ -137,7 +137,7 @@
         namedCurve: "P-384",
       },
       false,
-      ["deriveBits"]
+      ["deriveBits"],
     );
 
     let bobsKeyPair = await window.crypto.subtle.generateKey(
@@ -146,19 +146,19 @@
         namedCurve: "P-384",
       },
       false,
-      ["deriveBits"]
+      ["deriveBits"],
     );
 
     // Alice then generates a secret key using her private key and Bob's public key.
     alicesSecretKey = await deriveSharedSecret(
       alicesKeyPair.privateKey,
-      bobsKeyPair.publicKey
+      bobsKeyPair.publicKey,
     );
 
     // Bob generates the same secret key using his private key and Alice's public key.
     bobsSecretKey = await deriveSharedSecret(
       bobsKeyPair.privateKey,
-      alicesKeyPair.publicKey
+      alicesKeyPair.publicKey,
     );
 
     // Alice can then use her copy of the secret key to encrypt a message to Bob.

@@ -1,5 +1,4 @@
 (() => {
-
   const rawKey = window.crypto.getRandomValues(new Uint8Array(16));
 
   /*
@@ -15,13 +14,10 @@
   that will resolve to a CryptoKey representing the secret key.
   */
   function importSecretKey(rawKey) {
-    return window.crypto.subtle.importKey(
-      "raw",
-      rawKey,
-      "AES-GCM",
-      true,
-      ["encrypt", "decrypt"]
-    );
+    return window.crypto.subtle.importKey("raw", rawKey, "AES-GCM", true, [
+      "encrypt",
+      "decrypt",
+    ]);
   }
 
   /*
@@ -46,32 +42,32 @@
     const ciphertext = await window.crypto.subtle.encrypt(
       {
         name: "AES-GCM",
-        iv: iv
+        iv: iv,
       },
       secretKey,
-      encoded
+      encoded,
     );
 
     const buffer = new Uint8Array(ciphertext, 0, 5);
     const ciphertextValue = document.querySelector(".raw .ciphertext-value");
-    ciphertextValue.classList.add('fade-in');
-    ciphertextValue.addEventListener('animationend', () => {
-      ciphertextValue.classList.remove('fade-in');
+    ciphertextValue.classList.add("fade-in");
+    ciphertextValue.addEventListener("animationend", () => {
+      ciphertextValue.classList.remove("fade-in");
     });
     ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
   }
 
-    /*
+  /*
     Show and enable the encrypt button.
     */
-    function enableEncryptButton() {
-      encryptButton.classList.add('fade-in');
-      encryptButton.addEventListener('animationend', () => {
-        encryptButton.classList.remove('fade-in');
-      });
-      encryptButton.removeAttribute("disabled");
-      encryptButton.classList.remove("hidden");
-    }
+  function enableEncryptButton() {
+    encryptButton.classList.add("fade-in");
+    encryptButton.addEventListener("animationend", () => {
+      encryptButton.classList.remove("fade-in");
+    });
+    encryptButton.removeAttribute("disabled");
+    encryptButton.classList.remove("hidden");
+  }
 
   /*
   When the user clicks "Import Key"
@@ -85,5 +81,4 @@
   });
 
   encryptButton.addEventListener("click", encryptMessage);
-
 })();

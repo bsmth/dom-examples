@@ -1,5 +1,4 @@
 (() => {
-
   /*
   Store the calculated ciphertext and IV here, so we can decrypt the message later.
   */
@@ -28,17 +27,19 @@
     ciphertext = await window.crypto.subtle.encrypt(
       {
         name: "AES-GCM",
-        iv: iv
+        iv: iv,
       },
       key,
-      encoded
+      encoded,
     );
 
     let buffer = new Uint8Array(ciphertext, 0, 5);
-    const ciphertextValue = document.querySelector(".aes-gcm .ciphertext-value");
-    ciphertextValue.classList.add('fade-in');
-    ciphertextValue.addEventListener('animationend', () => {
-      ciphertextValue.classList.remove('fade-in');
+    const ciphertextValue = document.querySelector(
+      ".aes-gcm .ciphertext-value",
+    );
+    ciphertextValue.classList.add("fade-in");
+    ciphertextValue.addEventListener("animationend", () => {
+      ciphertextValue.classList.remove("fade-in");
     });
     ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
   }
@@ -51,17 +52,17 @@
     let decrypted = await window.crypto.subtle.decrypt(
       {
         name: "AES-GCM",
-        iv: iv
+        iv: iv,
       },
       key,
-      ciphertext
+      ciphertext,
     );
 
     let dec = new TextDecoder();
     const decryptedValue = document.querySelector(".aes-gcm .decrypted-value");
-    decryptedValue.classList.add('fade-in');
-    decryptedValue.addEventListener('animationend', () => {
-      decryptedValue.classList.remove('fade-in');
+    decryptedValue.classList.add("fade-in");
+    decryptedValue.addEventListener("animationend", () => {
+      decryptedValue.classList.remove("fade-in");
     });
     decryptedValue.textContent = dec.decode(decrypted);
   }
@@ -70,23 +71,24 @@
   Generate an encryption key, then set up event listeners
   on the "Encrypt" and "Decrypt" buttons.
   */
-  window.crypto.subtle.generateKey(
-    {
+  window.crypto.subtle
+    .generateKey(
+      {
         name: "AES-GCM",
         length: 256,
-    },
-    true,
-    ["encrypt", "decrypt"]
-  ).then((key) => {
-    const encryptButton = document.querySelector(".aes-gcm .encrypt-button");
-    encryptButton.addEventListener("click", () => {
-      encryptMessage(key);
-    });
+      },
+      true,
+      ["encrypt", "decrypt"],
+    )
+    .then((key) => {
+      const encryptButton = document.querySelector(".aes-gcm .encrypt-button");
+      encryptButton.addEventListener("click", () => {
+        encryptMessage(key);
+      });
 
-    const decryptButton = document.querySelector(".aes-gcm .decrypt-button");
-    decryptButton.addEventListener("click", () => {
-      decryptMessage(key);
+      const decryptButton = document.querySelector(".aes-gcm .decrypt-button");
+      decryptButton.addEventListener("click", () => {
+        decryptMessage(key);
+      });
     });
-  });
-
 })();

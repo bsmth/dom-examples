@@ -1,5 +1,4 @@
 (() => {
-
   const pemEncodedKey = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy3Xo3U13dc+xojwQYWoJLCbOQ5fOVY8LlnqcJm1W1BFtxIhOAJWohiHuIRMctv7dzx47TLlmARSKvTRjd0dF92jx/xY20Lz+DXp8YL5yUWAFgA3XkO3LSJgEOex10NB8jfkmgSb7QIudTVvbbUDfd5fwIBmCtaCwWx7NyeWWDb7A9cFxj7EjRdrDaK3ux/ToMLHFXVLqSL341TkCf4ZQoz96RFPUGPPLOfvN0x66CM1PQCkdhzjE6U5XGE964ZkkYUPPsy6Dcie4obhW4vDjgUmLzv0z7UD010RLIneUgDE2FqBfY/C+uWigNPBPkkQ+Bv/UigS6dHqTCVeD5wgyBQIDAQAB
 -----END PUBLIC KEY-----`;
@@ -33,7 +32,10 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy3Xo3U13dc+xojwQYWoJLCbOQ5fOVY8Llnqc
     // fetch the part of the PEM string between header and footer
     const pemHeader = "-----BEGIN PUBLIC KEY-----";
     const pemFooter = "-----END PUBLIC KEY-----";
-    const pemContents = pem.substring(pemHeader.length, pem.length - pemFooter.length);
+    const pemContents = pem.substring(
+      pemHeader.length,
+      pem.length - pemFooter.length,
+    );
     // base64 decode the string to get the binary data
     const binaryDerString = window.atob(pemContents);
     // convert from a binary string to an ArrayBuffer
@@ -44,10 +46,10 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy3Xo3U13dc+xojwQYWoJLCbOQ5fOVY8Llnqc
       binaryDer,
       {
         name: "RSA-OAEP",
-        hash: "SHA-256"
+        hash: "SHA-256",
       },
       true,
-      ["encrypt"]
+      ["encrypt"],
     );
   }
 
@@ -70,17 +72,17 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy3Xo3U13dc+xojwQYWoJLCbOQ5fOVY8Llnqc
     const encoded = getMessageEncoding();
     const ciphertext = await window.crypto.subtle.encrypt(
       {
-        name: "RSA-OAEP"
+        name: "RSA-OAEP",
       },
       encryptionKey,
-      encoded
+      encoded,
     );
 
     const buffer = new Uint8Array(ciphertext, 0, 5);
     const ciphertextValue = document.querySelector(".spki .ciphertext-value");
-    ciphertextValue.classList.add('fade-in');
-    ciphertextValue.addEventListener('animationend', () => {
-      ciphertextValue.classList.remove('fade-in');
+    ciphertextValue.classList.add("fade-in");
+    ciphertextValue.addEventListener("animationend", () => {
+      ciphertextValue.classList.remove("fade-in");
     });
     ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
   }
@@ -89,9 +91,9 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy3Xo3U13dc+xojwQYWoJLCbOQ5fOVY8Llnqc
   Show and enable the encrypt button.
   */
   function enableEncryptButton() {
-    encryptButton.classList.add('fade-in');
-    encryptButton.addEventListener('animationend', () => {
-      encryptButton.classList.remove('fade-in');
+    encryptButton.classList.add("fade-in");
+    encryptButton.addEventListener("animationend", () => {
+      encryptButton.classList.remove("fade-in");
     });
     encryptButton.removeAttribute("disabled");
     encryptButton.classList.remove("hidden");
@@ -109,5 +111,4 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy3Xo3U13dc+xojwQYWoJLCbOQ5fOVY8Llnqc
   });
 
   encryptButton.addEventListener("click", encryptMessage);
-
 })();

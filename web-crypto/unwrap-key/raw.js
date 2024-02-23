@@ -1,19 +1,22 @@
 (() => {
-
   /*
   Salt that is to be used in derivation of the key-wrapping key,
   alongside the password the user supplies.
   This must match the salt value that was originally used to derive
   the key.
   */
-  const saltBytes = [89,113,135,234,168,204,21,36,55,93,1,132,242,242,192,156];
+  const saltBytes = [
+    89, 113, 135, 234, 168, 204, 21, 36, 55, 93, 1, 132, 242, 242, 192, 156,
+  ];
 
   /*
   The wrapped key itself.
   */
-  const wrappedKeyBytes = [171,223,14,36,201,233,233,120,164,68,217,192,226,80,
-      224,39,199,235,239,60,212,169,100,23,61,54,244,197,160,80,109,230,207,
-      225,57,197,175,71,80,209];
+  const wrappedKeyBytes = [
+    171, 223, 14, 36, 201, 233, 233, 120, 164, 68, 217, 192, 226, 80, 224, 39,
+    199, 235, 239, 60, 212, 169, 100, 23, 61, 54, 244, 197, 160, 80, 109, 230,
+    207, 225, 57, 197, 175, 71, 80, 209,
+  ];
 
   /*
   The unwrapped secret key.
@@ -37,14 +40,16 @@
   The key material is a password supplied by the user.
   */
   function getKeyMaterial() {
-    const password = window.prompt("Enter your password. The password is 'correct horse battery staple'.");
+    const password = window.prompt(
+      "Enter your password. The password is 'correct horse battery staple'.",
+    );
     const enc = new TextEncoder();
     return window.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits", "deriveKey"],
     );
   }
 
@@ -61,15 +66,15 @@
     // 3 derive the key from key material and salt
     return window.crypto.subtle.deriveKey(
       {
-        "name": "PBKDF2",
+        name: "PBKDF2",
         salt: saltBuffer,
-        "iterations": 100000,
-        "hash": "SHA-256"
+        iterations: 100000,
+        hash: "SHA-256",
       },
       keyMaterial,
-      { "name": "AES-KW", "length": 256},
+      { name: "AES-KW", length: 256 },
       true,
-      [ "wrapKey", "unwrapKey" ]
+      ["wrapKey", "unwrapKey"],
     );
   }
 
@@ -85,13 +90,13 @@
     const wrappedKeyBuffer = bytesToArrayBuffer(wrappedKey);
     // 3. unwrap the key
     return window.crypto.subtle.unwrapKey(
-      "raw",                 // import format
-      wrappedKeyBuffer,      // ArrayBuffer representing key to unwrap
-      unwrappingKey,         // CryptoKey representing key encryption key
-      "AES-KW",              // algorithm identifier for key encryption key
-      "AES-GCM",             // algorithm identifier for key to unwrap
-      true,                  // extractability of key to unwrap
-      ["encrypt", "decrypt"] // key usages for key to unwrap
+      "raw", // import format
+      wrappedKeyBuffer, // ArrayBuffer representing key to unwrap
+      unwrappingKey, // CryptoKey representing key encryption key
+      "AES-KW", // algorithm identifier for key encryption key
+      "AES-GCM", // algorithm identifier for key to unwrap
+      true, // extractability of key to unwrap
+      ["encrypt", "decrypt"], // key usages for key to unwrap
     );
   }
 
@@ -117,17 +122,17 @@
     const ciphertext = await window.crypto.subtle.encrypt(
       {
         name: "AES-GCM",
-        iv: iv
+        iv: iv,
       },
       secretKey,
-      encoded
+      encoded,
     );
 
     const buffer = new Uint8Array(ciphertext, 0, 5);
     const ciphertextValue = document.querySelector(".raw .ciphertext-value");
-    ciphertextValue.classList.add('fade-in');
-    ciphertextValue.addEventListener('animationend', () => {
-      ciphertextValue.classList.remove('fade-in');
+    ciphertextValue.classList.add("fade-in");
+    ciphertextValue.addEventListener("animationend", () => {
+      ciphertextValue.classList.remove("fade-in");
     });
     ciphertextValue.textContent = `${buffer}...[${ciphertext.byteLength} bytes total]`;
   }
@@ -144,9 +149,9 @@
   Show and enable the encrypt button if key unwrapping succeeded.
   */
   function enableEncryptButton() {
-    encryptButton.classList.add('fade-in');
-    encryptButton.addEventListener('animationend', () => {
-      encryptButton.classList.remove('fade-in');
+    encryptButton.classList.add("fade-in");
+    encryptButton.addEventListener("animationend", () => {
+      encryptButton.classList.remove("fade-in");
     });
     encryptButton.removeAttribute("disabled");
     encryptButton.classList.remove("hidden");
@@ -162,13 +167,11 @@
     try {
       secretKey = await unwrapSecretKey(wrappedKeyBytes);
       enableEncryptButton();
-    }
-    catch(e) {
+    } catch (e) {
       resetEncryptButton();
       alert("Incorrect password");
     }
   });
 
   encryptButton.addEventListener("click", encryptMessage);
-
 })();

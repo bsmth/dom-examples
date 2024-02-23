@@ -14,7 +14,7 @@ function main() {
 
   if (!gl) {
     alert(
-      "Unable to initialize WebGL. Your browser or machine may not support it."
+      "Unable to initialize WebGL. Your browser or machine may not support it.",
     );
     return;
   }
@@ -63,7 +63,7 @@ function main() {
     uniformLocations: {
       projectionMatrix: gl.getUniformLocation(
         shaderProgram,
-        "uProjectionMatrix"
+        "uProjectionMatrix",
       ),
       modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
     },
@@ -247,7 +247,7 @@ function initBuffers(gl) {
   gl.bufferData(
     gl.ELEMENT_ARRAY_BUFFER,
     new Uint16Array(indices),
-    gl.STATIC_DRAW
+    gl.STATIC_DRAW,
   );
 
   return {
@@ -297,19 +297,19 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
   mat4.translate(
     modelViewMatrix, // destination matrix
     modelViewMatrix, // matrix to translate
-    [-0.0, 0.0, -6.0]
+    [-0.0, 0.0, -6.0],
   ); // amount to translate
   mat4.rotate(
     modelViewMatrix, // destination matrix
     modelViewMatrix, // matrix to rotate
     tetrahedronRotation, // amount to rotate in radians
-    [0, 0, 1]
+    [0, 0, 1],
   ); // axis to rotate around (Z)
   mat4.rotate(
     modelViewMatrix, // destination matrix
     modelViewMatrix, // matrix to rotate
     tetrahedronRotation * 0.7, // amount to rotate in radians
-    [0, 1, 0]
+    [0, 1, 0],
   ); // axis to rotate around (X)
 
   // Tell WebGL how to pull out the positions from the position
@@ -327,7 +327,7 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
       type,
       normalize,
       stride,
-      offset
+      offset,
     );
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
   }
@@ -347,7 +347,7 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
       type,
       normalize,
       stride,
-      offset
+      offset,
     );
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
   }
@@ -364,12 +364,12 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.projectionMatrix,
     false,
-    projectionMatrix
+    projectionMatrix,
   );
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.modelViewMatrix,
     false,
-    modelViewMatrix
+    modelViewMatrix,
   );
 
   {
@@ -403,7 +403,7 @@ function initShaderProgram(gl, vsSource, fsSource) {
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
     alert(
       "Unable to initialize the shader program: " +
-        gl.getProgramInfoLog(shaderProgram)
+        gl.getProgramInfoLog(shaderProgram),
     );
     return null;
   }
@@ -430,7 +430,7 @@ function loadShader(gl, type, source) {
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     alert(
-      "An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader)
+      "An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader),
     );
     gl.deleteShader(shader);
     return null;

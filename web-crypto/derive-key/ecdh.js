@@ -32,7 +32,7 @@
         iv: iv,
       },
       secretKey,
-      encoded
+      encoded,
     );
 
     let buffer = new Uint8Array(ciphertext, 0, 5);
@@ -62,7 +62,7 @@
           iv: iv,
         },
         secretKey,
-        ciphertext
+        ciphertext,
       );
 
       let dec = new TextDecoder();
@@ -94,7 +94,7 @@
         length: 256,
       },
       false,
-      ["encrypt", "decrypt"]
+      ["encrypt", "decrypt"],
     );
   }
 
@@ -108,7 +108,7 @@
         namedCurve: "P-384",
       },
       false,
-      ["deriveKey"]
+      ["deriveKey"],
     );
 
     let bobsKeyPair = await window.crypto.subtle.generateKey(
@@ -117,19 +117,19 @@
         namedCurve: "P-384",
       },
       false,
-      ["deriveKey"]
+      ["deriveKey"],
     );
 
     // Alice then generates a secret key using her private key and Bob's public key.
     let alicesSecretKey = await deriveSecretKey(
       alicesKeyPair.privateKey,
-      bobsKeyPair.publicKey
+      bobsKeyPair.publicKey,
     );
 
     // Bob generates the same secret key using his private key and Alice's public key.
     let bobsSecretKey = await deriveSecretKey(
       bobsKeyPair.privateKey,
-      alicesKeyPair.publicKey
+      alicesKeyPair.publicKey,
     );
 
     // Alice can then use her copy of the secret key to encrypt a message to Bob.

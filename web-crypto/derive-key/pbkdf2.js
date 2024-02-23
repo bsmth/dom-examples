@@ -1,5 +1,4 @@
 (() => {
-
   let salt;
   let ciphertext;
   let iv;
@@ -22,11 +21,11 @@
     let password = window.prompt("Enter your password");
     let enc = new TextEncoder();
     return window.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits", "deriveKey"],
     );
   }
 
@@ -37,15 +36,15 @@
   function getKey(keyMaterial, salt) {
     return window.crypto.subtle.deriveKey(
       {
-        "name": "PBKDF2",
-        salt: salt, 
-        "iterations": 100000,
-        "hash": "SHA-256"
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: "SHA-256",
       },
       keyMaterial,
-      { "name": "AES-GCM", "length": 256},
+      { name: "AES-GCM", length: 256 },
       true,
-      [ "encrypt", "decrypt" ]
+      ["encrypt", "decrypt"],
     );
   }
 
@@ -70,10 +69,10 @@
     ciphertext = await window.crypto.subtle.encrypt(
       {
         name: "AES-GCM",
-        iv: iv
+        iv: iv,
       },
       key,
-      encoded
+      encoded,
     );
 
     let buffer = new Uint8Array(ciphertext, 0, 5);
@@ -104,10 +103,10 @@
       let decrypted = await window.crypto.subtle.decrypt(
         {
           name: "AES-GCM",
-          iv: iv
+          iv: iv,
         },
         key,
-        ciphertext
+        ciphertext,
       );
 
       let dec = new TextDecoder();
