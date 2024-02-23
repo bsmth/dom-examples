@@ -15,11 +15,9 @@ function canvasDraw() {
   function find2ndCenter(pos, max) {
     if (pos < RADIUS) {
       pos += max;
-    }
-    else if (pos + RADIUS > max) {
+    } else if (pos + RADIUS > max) {
       pos -= max;
-    }
-    else {
+    } else {
       pos = 0;
     }
     return pos;
@@ -55,7 +53,7 @@ function canvasDraw() {
 canvasDraw();
 
 canvas.addEventListener("click", async () => {
-  if(!document.pointerLockElement) {
+  if (!document.pointerLockElement) {
     await canvas.requestPointerLock({
       unadjustedMovement: true,
     });
@@ -91,7 +89,7 @@ function updatePosition(e) {
 
   x = updateCoord(x, e.movementX, canvas.width);
   y = updateCoord(y, e.movementY, canvas.height);
-  
+
   tracker.textContent = `X position: ${x}, Y position: ${y}`;
 
   if (!animation) {
@@ -101,4 +99,3 @@ function updatePosition(e) {
     });
   }
 }
-

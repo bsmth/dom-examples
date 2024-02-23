@@ -5,11 +5,15 @@ function startup() {
   const video = document.getElementById("video");
 
   // On pressing ENTER call toggleFullScreen method
-  document.addEventListener("keypress", function(e) {
-    if (e.key === 'Enter') {
-      toggleFullScreen(video);
-    }
-  }, false);
+  document.addEventListener(
+    "keypress",
+    function (e) {
+      if (e.key === "Enter") {
+        toggleFullScreen(video);
+      }
+    },
+    false,
+  );
 }
 
 function toggleFullScreen(video) {
@@ -24,5 +28,3 @@ function toggleFullScreen(video) {
     }
   }
 }
-
-
