@@ -129,7 +129,11 @@ export function tokenizeHTML(htmlString) {
       tokens.push({ type: "attributeName", value: attributeName, pos });
       pos += attributeName.length;
 
-      if (htmlString.charAt(pos) !== "=" && htmlString.charAt(pos) !== "'" && htmlString.charAt(pos) !== '"') {
+      if (
+        htmlString.charAt(pos) !== "=" &&
+        htmlString.charAt(pos) !== "'" &&
+        htmlString.charAt(pos) !== '"'
+      ) {
         isInAttribute = false;
       }
 

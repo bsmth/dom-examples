@@ -2,7 +2,6 @@
  * This file contains logic to grayscale a PNG from a ReadableStream.
  */
 
-
 /**
  * Remove Paeth filter from three data points.
  */
@@ -17,7 +16,6 @@ function paeth(a, b, c) {
   return c;
 }
 
-
 /**
  * A source of a ReadableStream to create a grayscale PNG.
  */
@@ -27,7 +25,7 @@ class GrayscalePNGSource {
    */
   constructor(rs) {
     this._rs = rs;
-    this._mode = 'magic';
+    this._mode = "magic";
   }
 
   /**
@@ -44,7 +42,7 @@ class GrayscalePNGSource {
 
       while (position < length) {
         switch (this._mode) {
-          case 'magic': {
+          case "magic": {
             const magic1 = source.getUint32(position);
             target.setUint32(position, magic1);
             position += 4;
@@ -53,16 +51,21 @@ class GrayscalePNGSource {
             target.setUint32(position, magic2);
             position += 4;
 
-            const magic = magic1.toString(16) + '0' + magic2.toString(16);
-            console.log('%cPNG magic:     %c %o', 'font-weight: bold', '', magic);
-            if (magic !== '89504e470d0a1a0a') {
-              throw new TypeError('This is not a PNG');
+            const magic = magic1.toString(16) + "0" + magic2.toString(16);
+            console.log(
+              "%cPNG magic:     %c %o",
+              "font-weight: bold",
+              "",
+              magic,
+            );
+            if (magic !== "89504e470d0a1a0a") {
+              throw new TypeError("This is not a PNG");
             }
 
-            this._mode = 'header';
+            this._mode = "header";
             break;
           }
-          case 'header': {
+          case "header": {
             // Read chunk info
             const chunkLength = source.getUint32(position);
             target.setUint32(position, chunkLength);
@@ -70,8 +73,8 @@ class GrayscalePNGSource {
             const chunkName = this._readString(source, position, 4);
             this._writeString(target, position, chunkName);
             position += 4;
-            if (chunkName !== 'IHDR') {
-              throw new TypeError('PNG is missing IHDR chunk');
+            if (chunkName !== "IHDR") {
+              throw new TypeError("PNG is missing IHDR chunk");
             }
 
             // Read image dimensions
@@ -81,46 +84,82 @@ class GrayscalePNGSource {
             this._height = source.getUint32(position);
             target.setUint32(position, this._height);
             position += 4;
-            console.log('%cPNG dimensions:%c %d x %d', 'font-weight: bold', '', this._width, this._height);
+            console.log(
+              "%cPNG dimensions:%c %d x %d",
+              "font-weight: bold",
+              "",
+              this._width,
+              this._height,
+            );
 
             const bitDepth = source.getUint8(position);
             target.setUint8(position, bitDepth);
             position += 1;
-            console.log('%cPNG bit depth: %c %d', 'font-weight: bold', '', bitDepth);
+            console.log(
+              "%cPNG bit depth: %c %d",
+              "font-weight: bold",
+              "",
+              bitDepth,
+            );
 
             const colorType = source.getUint8(position);
             target.setUint8(position, colorType);
             position += 1;
-            console.log('%cPNG color type:%c %s', 'font-weight: bold', '', this._colorType(colorType));
+            console.log(
+              "%cPNG color type:%c %s",
+              "font-weight: bold",
+              "",
+              this._colorType(colorType),
+            );
 
             const compression = source.getUint8(position);
             target.setUint8(position, compression);
             position += 1;
-            console.log('%cPNG compressio:%c %d', 'font-weight: bold', '', compression);
+            console.log(
+              "%cPNG compressio:%c %d",
+              "font-weight: bold",
+              "",
+              compression,
+            );
             const filter = source.getUint8(position);
             target.setUint8(position, filter);
             position += 1;
-            console.log('%cPNG filter:    %c %d', 'font-weight: bold', '', filter);
+            console.log(
+              "%cPNG filter:    %c %d",
+              "font-weight: bold",
+              "",
+              filter,
+            );
             const interlace = source.getUint8(position);
             target.setUint8(position, interlace);
             position += 1;
-            console.log('%cPNG interlace: %c %d', 'font-weight: bold', '', interlace);
+            console.log(
+              "%cPNG interlace: %c %d",
+              "font-weight: bold",
+              "",
+              interlace,
+            );
 
             const chunkCrc = source.getUint32(position);
             target.setUint32(position, chunkCrc);
             position += 4;
 
-            this._mode = 'data';
+            this._mode = "data";
             break;
           }
-          case 'data': {
+          case "data": {
             // Read chunk info
             const dataSize = source.getUint32(position);
-            console.log('%cPNG data size: %c %d', 'font-weight: bold', '', dataSize);
+            console.log(
+              "%cPNG data size: %c %d",
+              "font-weight: bold",
+              "",
+              dataSize,
+            );
 
             const chunkName = this._readString(source, position + 4, 4);
-            if (chunkName !== 'IDAT') {
-              throw new TypeError('PNG is missing IDAT chunk');
+            if (chunkName !== "IDAT") {
+              throw new TypeError("PNG is missing IDAT chunk");
             }
 
             const crcStart = position + 4;
@@ -144,7 +183,7 @@ class GrayscalePNGSource {
 
             // Write data to target
             target.setUint32(position, result.byteLength);
-            this._writeString(target, position + 4, 'IDAT');
+            this._writeString(target, position + 4, "IDAT");
             buffer.set(result, position + 8);
 
             position += result.byteLength + 8;
@@ -153,10 +192,10 @@ class GrayscalePNGSource {
             target.setUint32(position, chunkCrc);
             position += 4;
 
-            this._mode = 'end';
+            this._mode = "end";
             break;
           }
-          case 'end': {
+          case "end": {
             // Write IEND chunk
             target.setUint32(position, 0);
             position += 4;
@@ -184,16 +223,19 @@ class GrayscalePNGSource {
    * @param {Uint8Array} uint8Array
    */
   _pump(controller, reader, uint8Array) {
-    return reader.read().then(({ value, done }) => {
-      if (done) {
-        return uint8Array;
-      }
+    return reader
+      .read()
+      .then(({ value, done }) => {
+        if (done) {
+          return uint8Array;
+        }
 
-      const newArray = new Uint8Array(uint8Array.length + value.length);
-      newArray.set(uint8Array);
-      newArray.set(value, uint8Array.length);
-      return this._pump(controller, reader, newArray);
-    }).catch((err) => console.error(err));
+        const newArray = new Uint8Array(uint8Array.length + value.length);
+        newArray.set(uint8Array);
+        newArray.set(value, uint8Array.length);
+        return this._pump(controller, reader, newArray);
+      })
+      .catch((err) => console.error(err));
   }
 
   /**
@@ -204,7 +246,10 @@ class GrayscalePNGSource {
   _readString(dataView, position, length) {
     return new Array(length)
       .fill(0)
-      .map((e, index) => String.fromCharCode(dataView.getUint8(position + index))).join('');
+      .map((e, index) =>
+        String.fromCharCode(dataView.getUint8(position + index)),
+      )
+      .join("");
   }
 
   /**
@@ -213,7 +258,11 @@ class GrayscalePNGSource {
    * @param {string} string
    */
   _writeString(dataView, position, string) {
-    string.split('').forEach((char, index) => dataView.setUint8(position + index, char.charCodeAt(0)));
+    string
+      .split("")
+      .forEach((char, index) =>
+        dataView.setUint8(position + index, char.charCodeAt(0)),
+      );
   }
 
   /**
@@ -224,24 +273,33 @@ class GrayscalePNGSource {
    */
   _colorType(number) {
     switch (number) {
-      case 0: return 'grayscale';
-      case 2: return 'rgb';
-      case 3: return 'palette';
-      case 4: return 'grayscale-alpha';
-      case 6: return 'rgb-alpha';
+      case 0:
+        return "grayscale";
+      case 2:
+        return "rgb";
+      case 3:
+        return "palette";
+      case 4:
+        return "grayscale-alpha";
+      case 6:
+        return "rgb-alpha";
     }
   }
 
   _removeFilters(src, bytesPerCol, bytesPerRow) {
     const dest = src.slice();
-    for (let y = 0, i = y * bytesPerRow; y < this._height; y += 1, i = y * bytesPerRow) {
+    for (
+      let y = 0, i = y * bytesPerRow;
+      y < this._height;
+      y += 1, i = y * bytesPerRow
+    ) {
       const filter = src[i];
       dest[i] = 0;
       i++;
       if (filter === 1) {
         // Sub filter
         for (let x = 0, j = i; x < this._width; x += 1, j += bytesPerCol) {
-          dest[j]     = src[j]     + dest[j     - bytesPerCol];
+          dest[j] = src[j] + dest[j - bytesPerCol];
           dest[j + 1] = src[j + 1] + dest[j + 1 - bytesPerCol];
           dest[j + 2] = src[j + 2] + dest[j + 2 - bytesPerCol];
           dest[j + 3] = src[j + 3] + dest[j + 3 - bytesPerCol];
@@ -249,7 +307,7 @@ class GrayscalePNGSource {
       } else if (filter === 2) {
         // Up filter
         for (let x = 0, j = i; x < this._width; x += 1, j += bytesPerCol) {
-          dest[j]     = src[j]     + dest[j     - bytesPerRow];
+          dest[j] = src[j] + dest[j - bytesPerRow];
           dest[j + 1] = src[j + 1] + dest[j + 1 - bytesPerRow];
           dest[j + 2] = src[j + 2] + dest[j + 2 - bytesPerRow];
           dest[j + 3] = src[j + 3] + dest[j + 3 - bytesPerRow];
@@ -257,18 +315,56 @@ class GrayscalePNGSource {
       } else if (filter === 3) {
         // Average filter
         for (let x = 0, j = i; x < this._width; x += 1, j += bytesPerCol) {
-          dest[j]     = src[j]     + Math.trunc((dest[j     - bytesPerCol] + dest[j     - bytesPerRow]) / 2);
-          dest[j + 1] = src[j + 1] + Math.trunc((dest[j + 1 - bytesPerCol] + dest[j + 1 - bytesPerRow]) / 2);
-          dest[j + 2] = src[j + 2] + Math.trunc((dest[j + 2 - bytesPerCol] + dest[j + 2 - bytesPerRow]) / 2);
-          dest[j + 3] = src[j + 3] + Math.trunc((dest[j + 3 - bytesPerCol] + dest[j + 3 - bytesPerRow]) / 2);
+          dest[j] =
+            src[j] +
+            Math.trunc((dest[j - bytesPerCol] + dest[j - bytesPerRow]) / 2);
+          dest[j + 1] =
+            src[j + 1] +
+            Math.trunc(
+              (dest[j + 1 - bytesPerCol] + dest[j + 1 - bytesPerRow]) / 2,
+            );
+          dest[j + 2] =
+            src[j + 2] +
+            Math.trunc(
+              (dest[j + 2 - bytesPerCol] + dest[j + 2 - bytesPerRow]) / 2,
+            );
+          dest[j + 3] =
+            src[j + 3] +
+            Math.trunc(
+              (dest[j + 3 - bytesPerCol] + dest[j + 3 - bytesPerRow]) / 2,
+            );
         }
       } else if (filter === 4) {
         // Paeth filter
         for (let x = 0, j = i; x < this._width; x += 1, j += bytesPerCol) {
-          dest[j]     = src[j]     + paeth(dest[j     - bytesPerCol], dest[j     - bytesPerRow], dest[j     - bytesPerCol - bytesPerRow]);
-          dest[j + 1] = src[j + 1] + paeth(dest[j + 1 - bytesPerCol], dest[j + 1 - bytesPerRow], dest[j + 1 - bytesPerCol - bytesPerRow]);
-          dest[j + 2] = src[j + 2] + paeth(dest[j + 2 - bytesPerCol], dest[j + 2 - bytesPerRow], dest[j + 2 - bytesPerCol - bytesPerRow]);
-          dest[j + 3] = src[j + 3] + paeth(dest[j + 3 - bytesPerCol], dest[j + 3 - bytesPerRow], dest[j + 3 - bytesPerCol - bytesPerRow]);
+          dest[j] =
+            src[j] +
+            paeth(
+              dest[j - bytesPerCol],
+              dest[j - bytesPerRow],
+              dest[j - bytesPerCol - bytesPerRow],
+            );
+          dest[j + 1] =
+            src[j + 1] +
+            paeth(
+              dest[j + 1 - bytesPerCol],
+              dest[j + 1 - bytesPerRow],
+              dest[j + 1 - bytesPerCol - bytesPerRow],
+            );
+          dest[j + 2] =
+            src[j + 2] +
+            paeth(
+              dest[j + 2 - bytesPerCol],
+              dest[j + 2 - bytesPerRow],
+              dest[j + 2 - bytesPerCol - bytesPerRow],
+            );
+          dest[j + 3] =
+            src[j + 3] +
+            paeth(
+              dest[j + 3 - bytesPerCol],
+              dest[j + 3 - bytesPerRow],
+              dest[j + 3 - bytesPerCol - bytesPerRow],
+            );
         }
       }
     }
@@ -277,17 +373,21 @@ class GrayscalePNGSource {
 
   _grayscale(src, bytesPerCol, bytesPerRow) {
     const dest = src.slice();
-    for (let y = 0, i = y * bytesPerRow; y < this._height; y += 1, i = y * bytesPerRow) {
+    for (
+      let y = 0, i = y * bytesPerRow;
+      y < this._height;
+      y += 1, i = y * bytesPerRow
+    ) {
       const filter = src[i];
       if (filter === 0) {
         i++;
         for (let x = 0, j = i; x < this._width; x += 1, j += bytesPerCol) {
-          const red   = src[j];
+          const red = src[j];
           const green = src[j + 1];
-          const blue  = src[j + 2];
+          const blue = src[j + 2];
 
           const gray = Math.trunc((red + green + blue) / 3);
-          dest[j    ] = gray;
+          dest[j] = gray;
           dest[j + 1] = gray;
           dest[j + 2] = gray;
         }

@@ -2,7 +2,6 @@
  * This file contains definitions for the PNG format's chunk types.
  */
 
-
 /**
  * Defines a property on an object reading and
  * writing its data from or to a DataView.
@@ -18,7 +17,7 @@ function defineDataViewProperty(object, name, dataView, bits, offset) {
     set(value) {
       return dataView[setter](offset, value);
     },
-  })
+  });
 }
 
 /**
@@ -28,22 +27,22 @@ class PNGChunk {
   constructor({ name, data }) {
     this.name = name;
     this.data = data;
-    Object.defineProperty(this, 'data', {
+    Object.defineProperty(this, "data", {
       enumerable: false,
       writable: true,
       value: data,
     });
-    Object.defineProperty(this, 'chunkCrc', {
+    Object.defineProperty(this, "chunkCrc", {
       enumerable: true,
       get() {
         return crc32(this.name, this.data);
-      }
+      },
     });
-    Object.defineProperty(this, 'chunkLength', {
+    Object.defineProperty(this, "chunkLength", {
       enumerable: true,
       get() {
         return this.data.byteLength;
-      }
+      },
     });
   }
 }
@@ -53,15 +52,15 @@ class PNGChunk {
  */
 class IHDRChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'IHDR', data });
+    super({ name: "IHDR", data });
     const dv = new DataView(data);
-    defineDataViewProperty(this, 'width', dv, 32, 0);
-    defineDataViewProperty(this, 'height', dv, 32, 4);
-    defineDataViewProperty(this, 'bitDepth', dv, 8, 8);
-    defineDataViewProperty(this, 'colorType', dv, 8, 9);
-    defineDataViewProperty(this, 'compression', dv, 8, 10);
-    defineDataViewProperty(this, 'filter', dv, 8, 11);
-    defineDataViewProperty(this, 'interlace', dv, 8, 12);
+    defineDataViewProperty(this, "width", dv, 32, 0);
+    defineDataViewProperty(this, "height", dv, 32, 4);
+    defineDataViewProperty(this, "bitDepth", dv, 8, 8);
+    defineDataViewProperty(this, "colorType", dv, 8, 9);
+    defineDataViewProperty(this, "compression", dv, 8, 10);
+    defineDataViewProperty(this, "filter", dv, 8, 11);
+    defineDataViewProperty(this, "interlace", dv, 8, 12);
   }
 }
 
@@ -70,7 +69,7 @@ class IHDRChunk extends PNGChunk {
  */
 class IDATChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'IDAT', data });
+    super({ name: "IDAT", data });
   }
 }
 
@@ -79,7 +78,7 @@ class IDATChunk extends PNGChunk {
  */
 class IENDChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'IEND', data });
+    super({ name: "IEND", data });
   }
 }
 
@@ -88,26 +87,32 @@ class IENDChunk extends PNGChunk {
  */
 class tEXtChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'tEXt', data });
-    Object.defineProperty(this, 'key', {
+    super({ name: "tEXt", data });
+    Object.defineProperty(this, "key", {
       enumerable: true,
       get() {
-        return String.fromCharCode(...new Uint8Array(this.data)).split(`\0`, 2)[0];
+        return String.fromCharCode(...new Uint8Array(this.data)).split(
+          `\0`,
+          2,
+        )[0];
       },
       set(key) {
         const str = `${key}\0${this.value}`;
-        const from = Uint8Array.from(str.split('').map(s => s.charCodeAt(0)));
+        const from = Uint8Array.from(str.split("").map((s) => s.charCodeAt(0)));
         this.data = from.buffer;
       },
     });
-    Object.defineProperty(this, 'value', {
+    Object.defineProperty(this, "value", {
       enumerable: true,
       get() {
-        return String.fromCharCode(...new Uint8Array(this.data)).split(`\0`, 2)[1];
+        return String.fromCharCode(...new Uint8Array(this.data)).split(
+          `\0`,
+          2,
+        )[1];
       },
       set(value) {
         const str = `${this.key}\0${value}`;
-        const from = Uint8Array.from(str.split('').map(s => s.charCodeAt(0)));
+        const from = Uint8Array.from(str.split("").map((s) => s.charCodeAt(0)));
         this.data = from.buffer;
       },
     });
@@ -119,15 +124,15 @@ class tEXtChunk extends PNGChunk {
  */
 class sRGBChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'sRGB', data });
+    super({ name: "sRGB", data });
     const values = [
-      'perceptual',
-      'relative colorimetric',
-      'saturation',
-      'absolute colorimetric',
+      "perceptual",
+      "relative colorimetric",
+      "saturation",
+      "absolute colorimetric",
     ];
     const dv = new DataView(data);
-    Object.defineProperty(this, 'value', {
+    Object.defineProperty(this, "value", {
       enumerable: true,
       get() {
         return values[dv.getUint8(0)];
@@ -146,16 +151,16 @@ class sRGBChunk extends PNGChunk {
  */
 class bKGDChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'bKGD', data });
+    super({ name: "bKGD", data });
     const dv = new DataView(data);
     if (data.byteLength === 1) {
-      defineDataViewProperty(this, 'paletteColor', dv, 8, 0);
+      defineDataViewProperty(this, "paletteColor", dv, 8, 0);
     } else if (data.byteLength === 2) {
-      defineDataViewProperty(this, 'gray', dv, 16, 0);
+      defineDataViewProperty(this, "gray", dv, 16, 0);
     } else {
-      defineDataViewProperty(this, 'red', dv, 16, 0);
-      defineDataViewProperty(this, 'green', dv, 16, 2);
-      defineDataViewProperty(this, 'blue', dv, 16, 4);
+      defineDataViewProperty(this, "red", dv, 16, 0);
+      defineDataViewProperty(this, "green", dv, 16, 2);
+      defineDataViewProperty(this, "blue", dv, 16, 4);
     }
   }
 }
@@ -165,11 +170,11 @@ class bKGDChunk extends PNGChunk {
  */
 class pHYsChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'pHYs', data });
+    super({ name: "pHYs", data });
     const dv = new DataView(data);
-    defineDataViewProperty(this, 'pixelsPerUnitX', dv, 32, 0);
-    defineDataViewProperty(this, 'pixelsPerUnitY', dv, 32, 4);
-    defineDataViewProperty(this, 'unit', dv, 8, 8);
+    defineDataViewProperty(this, "pixelsPerUnitX", dv, 32, 0);
+    defineDataViewProperty(this, "pixelsPerUnitY", dv, 32, 4);
+    defineDataViewProperty(this, "unit", dv, 8, 8);
   }
 }
 
@@ -178,14 +183,14 @@ class pHYsChunk extends PNGChunk {
  */
 class tIMEChunk extends PNGChunk {
   constructor({ data }) {
-    super({ name: 'tIME', data });
+    super({ name: "tIME", data });
     const dv = new DataView(data);
-    defineDataViewProperty(this, 'year', dv, 16, 0);
-    defineDataViewProperty(this, 'month', dv, 8, 2);
-    defineDataViewProperty(this, 'day', dv, 8, 3);
-    defineDataViewProperty(this, 'hour', dv, 8, 4);
-    defineDataViewProperty(this, 'minute', dv, 8, 5);
-    defineDataViewProperty(this, 'second', dv, 8, 6);
+    defineDataViewProperty(this, "year", dv, 16, 0);
+    defineDataViewProperty(this, "month", dv, 8, 2);
+    defineDataViewProperty(this, "day", dv, 8, 3);
+    defineDataViewProperty(this, "hour", dv, 8, 4);
+    defineDataViewProperty(this, "minute", dv, 8, 5);
+    defineDataViewProperty(this, "second", dv, 8, 6);
   }
 }
 
@@ -198,21 +203,21 @@ class tIMEChunk extends PNGChunk {
  */
 function createChunk({ name, data }) {
   switch (name) {
-    case 'IHDR':
+    case "IHDR":
       return new IHDRChunk({ data });
-    case 'IDAT':
+    case "IDAT":
       return new IDATChunk({ data });
-    case 'IEND':
+    case "IEND":
       return new IENDChunk({ data });
-    case 'tEXt':
+    case "tEXt":
       return new tEXtChunk({ data });
-    case 'sRGB':
+    case "sRGB":
       return new sRGBChunk({ data });
-    case 'bKGD':
+    case "bKGD":
       return new bKGDChunk({ data });
-    case 'pHYs':
+    case "pHYs":
       return new pHYsChunk({ data });
-    case 'tIME':
+    case "tIME":
       return new tIMEChunk({ data });
     default:
       return new PNGChunk({ name, data });

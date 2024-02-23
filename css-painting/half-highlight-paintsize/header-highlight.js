@@ -13,5 +13,5 @@ registerPaint(
       ctx.fillStyle = "hsl(55 90% 60% / 1.0)";
       ctx.fillRect(0, size.height / 3, size.width * 0.4, size.height * 0.6);
     }
-  }
+  },
 );

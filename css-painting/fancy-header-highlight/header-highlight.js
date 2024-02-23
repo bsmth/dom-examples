@@ -34,16 +34,16 @@ registerPaint(
         ctx.lineTo(blockWidth + start * 10 + 20, y);
         ctx.lineTo(
           blockWidth + start * 10 + 20 + highlightHeight,
-          highlightHeight
+          highlightHeight,
         );
         ctx.lineTo(
           blockWidth + start * 10 + 10 + highlightHeight,
-          highlightHeight
+          highlightHeight,
         );
         ctx.lineTo(blockWidth + start * 10 + 10, y);
         ctx.closePath();
         ctx.fill();
       }
     } // paint
-  }
+  },
 );

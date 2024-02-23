@@ -74,7 +74,7 @@ self.addEventListener('install', (event) => {
       './gallery/bountyHunters.jpg',
       './gallery/myLittleVader.jpg',
       './gallery/snowTroopers.jpg',
-    ])
+    ]),
   );
 });
 
@@ -84,6 +84,6 @@ self.addEventListener('fetch', (event) => {
       request: event.request,
       preloadResponsePromise: event.preloadResponse,
       fallbackUrl: './gallery/myLittleVader.jpg',
-    })
+    }),
   );
 });

@@ -2,7 +2,6 @@
  * This file contains a PNGTransformStream which retrieves PNG chunks out of a binary data stream.
  */
 
-
 /**
  * This class unpacks Uint8Arrays and sends PNG chunks when it gained enough data.
  */
@@ -44,18 +43,26 @@ class PNGUnpacker {
       }
 
       // Create a PNG chunk instance out of data retrieved
-      const name = String.fromCharCode(dataView.getUint8(4), dataView.getUint8(5), dataView.getUint8(6), dataView.getUint8(7));
-      const data = this.data.buffer.slice(this.position + 8, this.position + chunkLength + 8);
+      const name = String.fromCharCode(
+        dataView.getUint8(4),
+        dataView.getUint8(5),
+        dataView.getUint8(6),
+        dataView.getUint8(7),
+      );
+      const data = this.data.buffer.slice(
+        this.position + 8,
+        this.position + chunkLength + 8,
+      );
       const chunk = createChunk({ name, data });
 
       // Inform consumer about the found chunk
-      if (typeof this.onChunk === 'function') {
+      if (typeof this.onChunk === "function") {
         this.onChunk(chunk);
       }
 
       // Check if found the last chunk within the PNG
-      if (name === 'IEND') {
-        if (typeof this.onClose === 'function') {
+      if (name === "IEND") {
+        if (typeof this.onClose === "function") {
           this.onClose();
           return;
         }
@@ -76,15 +83,15 @@ class PNGTransformStream {
 
     this.readable = new ReadableStream({
       start(controller) {
-        unpacker.onChunk = chunk => controller.enqueue(chunk);
+        unpacker.onChunk = (chunk) => controller.enqueue(chunk);
         unpacker.onClose = () => controller.close();
-      }
+      },
     });
 
     this.writable = new WritableStream({
       write(uint8Array) {
         unpacker.addBinaryData(uint8Array);
-      }
+      },
     });
   }
 }

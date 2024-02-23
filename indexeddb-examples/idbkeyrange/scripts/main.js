@@ -88,7 +88,7 @@ window.onload = function () {
   function displayData() {
     checkedValue = document.querySelector('input[name="value"]:checked').value;
     var filterIndex = document.querySelector(
-      'input[name="filterIndex"]:checked'
+      'input[name="filterIndex"]:checked',
     ).value;
 
     if (filterIndex == "fThing") {
@@ -101,7 +101,7 @@ window.onload = function () {
           rangeLowerText.value,
           rangeUpperText.value,
           false,
-          false
+          false,
         );
       } else if (checkedValue == "lower") {
         keyRangeValue = IDBKeyRange.lowerBound(lowerBoundText.value);
@@ -119,15 +119,15 @@ window.onload = function () {
           parseFloat(rangeLowerText.value),
           parseFloat(rangeUpperText.value),
           false,
-          false
+          false,
         );
       } else if (checkedValue == "lower") {
         keyRangeValue = IDBKeyRange.lowerBound(
-          parseFloat(lowerBoundText.value)
+          parseFloat(lowerBoundText.value),
         );
       } else if (checkedValue == "upper") {
         keyRangeValue = IDBKeyRange.upperBound(
-          parseFloat(upperBoundText.value)
+          parseFloat(upperBoundText.value),
         );
       }
     }

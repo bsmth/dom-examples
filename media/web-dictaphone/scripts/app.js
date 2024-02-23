@@ -50,7 +50,7 @@ if (navigator.mediaDevices.getUserMedia) {
 
       const clipName = prompt(
         "Enter a name for your sound clip?",
-        "My unnamed clip"
+        "My unnamed clip",
       );
 
       const clipContainer = document.createElement("article");

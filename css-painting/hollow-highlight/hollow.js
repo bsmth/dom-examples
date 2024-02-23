@@ -68,5 +68,5 @@ registerPaint(
         ctx.stroke();
       }
     } // paint
-  }
+  },
 );
